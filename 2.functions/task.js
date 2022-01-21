@@ -2,35 +2,25 @@
 
 // Задание 1
 
-function getRandomArbitrary() {
-  return Math.random() * 200-100;
+function getArrayParams(arr) {
+  let elementsCount = arr.length;
+  let sum = 0;
+  let max = arr[0];
+  let min = arr[0]; 
+  for (let i = 0; i < elementsCount; i = i + 1) {
+    if (max < arr[i]) {
+      max = arr[i];
+    }
+    if (min > arr[i]) {
+      min = arr[i];
+    }
+    sum = sum + arr[i];
+  }
+  let avarage = sum / elementsCount;
+  avarage = avarage.toFixed(2);
+  avarage = Number(avarage);
+  return {min:min, max:max, avg:avarage};
 }
-
-function getArrayParams(arr) { 
-//- добавить в массив элементы от -100 до 100
-  for (let i = 0; i <= 100; i++) {
-    arr[i]=getRandomArbitrary(-100,100);
-  } 
-
-  let min=arr[0];
-  let max=arr[0];
-  let sum=arr[0];
-  let avg=Number((sum/arr.lenght).toFixed(2));
-  
-  for (let i =1; i<arr.length();i++) {
-    if (min>arr[i]) {
-      min=arr[i];
-    }
-    if (max>arr[i]) {
-      max=arr[i];
-    }
-    sum+=arr[i]; 
-    }
-  // Ваш код
-
-  return { min: min, max: max, avg: avg };
-}
-
 // Задание 2
 function worker(arr) {
   let sum = arr.reduce(function(sum, elem) {
