@@ -1,4 +1,3 @@
-
 function Student(name, gender, age) {
   this.name = name;
   this.gender = gender;
@@ -18,7 +17,7 @@ student2.setSubject('literature');
 student1.setSubject('math');
 
 
-Student.prototype.addMark = function ([mark]) {
+Student.prototype.addMark = function (mark) {
   if (this.marks === undefined) {
     this.marks = [mark];
     // добавить первую оценку
@@ -27,14 +26,19 @@ Student.prototype.addMark = function ([mark]) {
     // добавить вторую и последующие оценки в массив
   }
 }
-student1.addMark([5]);
-student1.addMark([3]);
-student2.addMark([4]);
-student2.addMark([5]);
+student1.addMark(5);
+student1.addMark(3);
+student2.addMark(4);
+student2.addMark(5);
 
 // Добавить сразу много оценок в массив
 Student.prototype.addMarks = function (...allMarks) {
+  if (this.marks === undefined) {
+    this.marks = allMarks;
+    // создать первый массив оценок
+  } else {
   this.marks = this.marks.concat(...allMarks);
+}
 }
 student1.addMarks([3, 5, 4, 5, 5]);
 student2.addMarks([3, 4, 4, 3]);
@@ -46,18 +50,18 @@ Student.prototype.getAverage = function () {
     return result + elem;
   }, 0);
   let result = sum / elementsCount;
-  this.average = result.toFixed(2);
-  //console.log(this.average);
+  return result
+
 }
 
 student1.getAverage();
 student2.getAverage();
-
+//console.log(student1.getAverage());
 
 Student.prototype.exclude = function (reason) {
   delete this.subject;
   delete this.marks;
-  this.exclude = reason;
+  this.excluded = reason;
 }
 student1.exclude('low grades');
 console.log(student1);
