@@ -10,13 +10,10 @@ function parseCount(value) {
     const parsed = Number.parseInt(value);
 
     // Если результатом парсинга является значение `NaN`, то выбрасывайте исключение с ошибкой *"Невалидное значение"
-
-    if (Number.isNaN(parsed) == true) {
-        throw ("Невалидное значение")
+    if (Number.isNaN(parsed)) {
+        throw new Error ("Невалидное значение")
     }
-    if (Number.isNaN(parsed) == false) {
-        return parsed
-    }
+    return parsed
     //Верните результат парсинга из функции.
 }
 
@@ -31,13 +28,12 @@ function validateCount(value) {
 
     //Попробуйте распарсить значение с помощью функции `parseCount`.
     try {
-        parseCount(value)
+        parseCount(value);
+        return parseCount(value)
     }
     catch (e) {
-        console.log(e)
         return e
     }
-    return parseCount(value)
 }
 
 validateCount("jfkdsl");
@@ -59,26 +55,22 @@ console.log(validateCount("jfkdsl"));
 class Triangle {
     constructor(a, b, c) {
         if (a + b < c || a + c < b || b + c < a) {
-            throw ("Треугольник с такими сторонами не существует")
+            throw new Error("Треугольник с такими сторонами не существует")
         }
-        else {
             this.a = a;
             this.b = b;
             this.c = c;
-        }
     }
     // Метод `getPerimeter` должен возвращать периметр треугольника.
     getPerimeter() {
-        let P = (this.a + this.b + this.c);
-        this.Perimeter = P
-        return P
+        return (this.a + this.b + this.c)
     }
 
     // Метод `getArea` должен возвращать площадь треугольника
     getArea() {
-        let PP = this.Perimeter * 0.5;
+        let PP = (this.a + this.b + this.c) * 0.5;
         let S = Math.sqrt(PP * (PP - this.a) * (PP - this.b) * (PP - this.c));
-        return S.toFixed(3)
+        return +S.toFixed(3)
     }
 
     // Напишите функцию `getTriangle`
@@ -100,25 +92,24 @@ console.log(newTriangle.getArea());
 
 function getTriangle(a, b, c) {
     try {
-        const SecondTriangle = new Triangle(
+        const secondTriangle = new Triangle(
             a,
             b,
             c
         );
-        return SecondTriangle
+        return secondTriangle
     }
     catch (e) {
-        console.log(e)
-        SecondTriangle = {
-            getPerimeter(){
-             return "Ошибка! Треугольник не существует"
+        secondTriangle = {
+            getPerimeter() {
+                return "Ошибка! Треугольник не существует"
             },
 
-            getArea(){
+            getArea() {
                 return "Ошибка! Треугольник не существует"
-             }
+            }
         }
-        return SecondTriangle
+        return secondTriangle
     };
 }
 
@@ -127,5 +118,5 @@ getTriangle(1, 300, 100);
 console.log(getTriangle(1, 300, 100));
 getTriangle(2, 5, 5);
 console.log(getTriangle(2, 5, 5));
-console.log(SecondTriangle.getPerimeter());
-console.log(SecondTriangle.getArea());
+console.log(secondTriangle.getPerimeter());
+console.log(secondTriangle.getArea());
