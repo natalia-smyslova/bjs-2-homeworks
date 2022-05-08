@@ -16,6 +16,13 @@ class PrintEditionItem {
     //  Для лучшего контроля над состоянием создайте «сеттер» для свойства `state`, 
     //принимающий в качестве аргумента новое состояние печатного издания (число).   
 
+    get state() {
+        return this._state
+    }
+    set state(number) {
+        this._state 
+    }
+
     setnewState(number) {
         if (number < 0) {
             this.state = 0
@@ -65,17 +72,17 @@ console.log(Cosmopolitan)
 
 
 class Book extends PrintEditionItem {
-    constructor(name, author, releaseDate, pagesCount) {
+    constructor(author, name, releaseDate, pagesCount) {
         super(name, releaseDate, pagesCount);
-        this.type = 'book';
         this.authorName = author;
+        this.type = 'book';
     }
 
 }
 
 const Book1 = new Book(
-    "Мы",
     "Замятин",
+    "Мы",
     1911,
     200
 );
@@ -83,45 +90,45 @@ console.log(Book1)
 
 
 class NovelBook extends Book {
-    constructor(name, author, releaseDate, pagesCount) {
-        super(name, author, releaseDate, pagesCount);
+    constructor(author, name, releaseDate, pagesCount) {
+        super( author, name, releaseDate, pagesCount);
         this.type = '"novel"';
     }
 }
 
 const ZovKtulhu = new NovelBook(
-    "Зов Ктулху",
     "Лавкрафт",
+    "Зов Ктулху",
     1980,
     180,
 );
 console.log(ZovKtulhu);
 
 class FantasticBook extends Book {
-    constructor(name, author, releaseDate, pagesCount) {
-        super(name, author, releaseDate, pagesCount);
+    constructor(author, name, releaseDate, pagesCount) {
+        super(author,name, releaseDate, pagesCount);
         this.type = '"fantastic"';
     }
 
 }
 const LordOfTheRings = new FantasticBook(
-    "Властелин колец",
     "Толкин",
+    "Властелин колец",
     1950,
     2000,
 );
 console.log(LordOfTheRings);
 
 class DetectiveBook extends Book {
-    constructor(name, author, releaseDate, pagesCount) {
-        super(name, author, releaseDate, pagesCount);
+    constructor(author, name, releaseDate, pagesCount) {
+        super(author, name, releaseDate, pagesCount);
         this.type = '"detective"';
     }
 }
 
 const SecretHistory = new DetectiveBook(
-    "Тайная история",
     "Донна Тарт",
+    "Тайная история",
     1990,
     450,
 );
@@ -136,8 +143,9 @@ class Library {
     }
     // Конструктор класса должен принимать название библиотеки `name` (строка). Значением свойства `books` должен быть пустой массив.
     addBook(book) {
-        if (book.state > 30)
+        if (book.state > 30) {
             this.books.push(book);
+        }
     }
     findBookBy(type, value) {
         for (let key in this.books) {
@@ -166,8 +174,8 @@ const library = new Library("Библиотека имени Ленина", [])
 
 library.addBook(
     new DetectiveBook(
-        "Тайная история",
         "Донна Тарт",
+        "Тайная история",
         1990,
         450,
     )
@@ -176,8 +184,8 @@ library.addBook(
 
 library.addBook(
     new FantasticBook(
-        "Властелин колец",
         "Толкин",
+        "Властелин колец",
         1950,
         2000,
     )
