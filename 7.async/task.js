@@ -62,7 +62,6 @@ class AlarmClock {
     }
 
     start() {
-        console.log('start');
         // Создайте функцию проверки (`checkClock`), которая принимает звонок и проверяет: если текущее время совпадает со временем звонка, то вызывайте колбек.
         function checkClock(alarm) {
             if (alarm.time == new Date().toLocaleTimeString("ru", { hour: "2-digit", minute: "2-digit" }))
