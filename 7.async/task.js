@@ -71,8 +71,7 @@ class AlarmClock {
         // Если значение идентификатора текущего таймера отсутствует, то создайте новый интервал.
         // Результат функции `setInterval` сохраните в свойстве идентификатора текущего таймера. 
         if (this.timerId === undefined) {
-            this.timerId = setInterval(function (alarmClock) {
-                console.log('interval');
+            this.timerId = setInterval(function (alarmClock) {Ы
                 // В этом интервале реализуйте функцию, которая будет перебирать все звонки, и для каждого вызывать функцию `checkClock`.       
                 alarmClock.alarmCollection.forEach(checkClock);
             }, 60000, this);
