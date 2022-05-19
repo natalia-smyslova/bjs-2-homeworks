@@ -8,7 +8,7 @@ class AlarmClock {
     //Создайте свойство `timerId` для хранения `id` таймера без начального значения.
     constructor() {
         this.alarmCollection = [];
-        this.timerId;
+        this.timerId = null;
     }
 
     //`addClock` - добавляет новый звонок в коллекцию существующих. 
@@ -31,11 +31,17 @@ class AlarmClock {
             return false;
         }
 
-        this.alarmCollection[id] = {
+        this.alarmCollection.push({
             id: id,
             time: time,
             callback: func
-        };
+        });
+
+        // this.alarmCollection[id] = {
+        //     id: id,
+        //     time: time,
+        //     callback: func
+        // };
 
         return true;
     }
@@ -44,11 +50,23 @@ class AlarmClock {
     //`removeClock` - удаляет определённый звонок.
     //Принимает `id` звонка, который следует удалить.
     removeClock(id) {
-        if (this.alarmCollection[id] === undefined)
-            return false;
+        let firstSize = this.alarmCollection.length;
 
-        delete this.alarmCollection[id];
-        return true;
+        this.alarmCollection = this.alarmCollection.filter((alarm) => { return alarm.id !== id });
+
+        if (firstSize > this.alarmCollection.length) {
+            return true
+        }
+        else {
+            return false
+        }
+
+        // removeClock(id) {
+        //     if (this.alarmCollection[id] === undefined)
+        //         return false;
+
+        //     delete this.alarmCollection[id];
+        //     return true;
 
         //Удалите из массива звонков тот, у которого `id` совпадает с текущим. Например, можно использовать метод `filter`.
 
@@ -63,25 +81,35 @@ class AlarmClock {
 
     start() {
         // Создайте функцию проверки (`checkClock`), которая принимает звонок и проверяет: если текущее время совпадает со временем звонка, то вызывайте колбек.
+
         function checkClock(alarm) {
-            if (alarm.time == new Date().toLocaleTimeString("ru", { hour: "2-digit", minute: "2-digit" }))
+            if (alarm.time == this.getCurrentFormattedTime()) {
                 alarm.callback();
+            }
+        }
+
+
+        // this.alarmCollection.forEach(checkClock, this);
+
+        // this.alarmCollection.forEach((alarm) => { checkClock.call(this, alarm) });
+
+
+        if (this.timerId === null) {
+
+            this.timerId = setInterval(() => {
+                this.alarmCollection.forEach( checkClock.bind(this) );
+            }, 60000);
+
         }
 
         // Если значение идентификатора текущего таймера отсутствует, то создайте новый интервал.
         // Результат функции `setInterval` сохраните в свойстве идентификатора текущего таймера. 
-        if (this.timerId === undefined) {
-            this.timerId = setInterval(function (alarmClock) {Ы
-                // В этом интервале реализуйте функцию, которая будет перебирать все звонки, и для каждого вызывать функцию `checkClock`.       
-                alarmClock.alarmCollection.forEach(checkClock);
-            }, 60000, this);
-        }
     }
 
     stop() {
-        if (this.timerId !== undefined) {
+        if (this.timerId !== null) {
             clearInterval(this.timerId);
-            this.timerId = undefined;
+            this.timerId = null;
         }
     }
     printAlarms() {
@@ -101,12 +129,12 @@ function testCase() {
 
     // Добавьте в созданный объект новый звонок с текущим временем и колбеком вывода текста на консоль. 
     // Так, чтобы после запуска, функция вывода *выполнилась несколько раз*.
-    phoneAlarm.addClock("13:36", () => { console.log("Пора вставать") }, 1);
+    phoneAlarm.addClock("22:01", () => { console.log("Пора вставать") }, 1);
 
     //Добавьте ещё один звонок со временем +1 минуты от текущего времени и колбеком: вывода текста на консоль,
     //а так же удалением этого звонка. Так, чтобы после запуска функция вывода *выполнилась один раз, а потом удалилась*.
 
-    phoneAlarm.addClock("13:37", function () {
+    phoneAlarm.addClock("22:02", function () {
         console.log("Давай, вставай уже!");
         phoneAlarm.removeClock(2);
     }, 2);
@@ -117,7 +145,7 @@ function testCase() {
     // Так, чтобы после запуска функция вывода *выполнилась один раз,
     //потом остановился интервал, все звонки очистились, и ничего не вывелось*
 
-    phoneAlarm.addClock("13:38", function () {
+    phoneAlarm.addClock("22:03", function () {
         console.log("Проснись и пой");
         phoneAlarm.clearAlarms();
         phoneAlarm.printAlarms();
@@ -126,6 +154,10 @@ function testCase() {
     //Напечатайте все звонки (должно вывестись 3 звонка).
 
     phoneAlarm.printAlarms();
+
+    // console.log(phoneAlarm.alarmCollection);
+    phoneAlarm.removeClock(2);
+    // console.log(phoneAlarm.alarmCollection);
 
     //Запустите выполнение ваших звонков.
 
