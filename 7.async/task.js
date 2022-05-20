@@ -18,6 +18,7 @@ class AlarmClock {
     // Принимает параметр идентификатора создаваемого звонка.
 
     addClock(time, func, id) {
+        console.log(this.alarmCollection.some((element) => element.id == id));
         //Проверьте, передан ли параметр `id`. Если параметр не передан, выполните выброс ошибки (с помощью `throw new Error('error text')`).
         if (id === undefined) {
             throw new Error("Параметр не передан");
@@ -26,7 +27,7 @@ class AlarmClock {
         //   Проверьте, есть ли какой-нибудь звонок с уже существующим `id`
         //  Если есть, выведите ошибку (с помощью `console.error()`)
         // и завершите выполнение метода. Программа должна продолжать работать, но звонок не должен быть добавлен. 
-        if (this.alarmCollection[id] !== undefined) {
+        if (this.alarmCollection.some((element) => element.id == id) == true) {
             console.error("Будильник с таким id уже существует!");
             return false;
         }
@@ -54,19 +55,7 @@ class AlarmClock {
 
         this.alarmCollection = this.alarmCollection.filter((alarm) => { return alarm.id !== id });
 
-        if (firstSize > this.alarmCollection.length) {
-            return true
-        }
-        else {
-            return false
-        }
-
-        // removeClock(id) {
-        //     if (this.alarmCollection[id] === undefined)
-        //         return false;
-
-        //     delete this.alarmCollection[id];
-        //     return true;
+        return firstSize > this.alarmCollection.length;
 
         //Удалите из массива звонков тот, у которого `id` совпадает с текущим. Например, можно использовать метод `filter`.
 
@@ -97,7 +86,7 @@ class AlarmClock {
         if (this.timerId === null) {
 
             this.timerId = setInterval(() => {
-                this.alarmCollection.forEach( checkClock.bind(this) );
+                this.alarmCollection.forEach(checkClock.bind(this));
             }, 60000);
 
         }
@@ -149,7 +138,7 @@ function testCase() {
         console.log("Проснись и пой");
         phoneAlarm.clearAlarms();
         phoneAlarm.printAlarms();
-    }, 3);
+    },3);
 
     //Напечатайте все звонки (должно вывестись 3 звонка).
 
