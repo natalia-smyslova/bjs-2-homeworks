@@ -10,15 +10,18 @@
 
 //Рекомендуется параллельно выводить результаты в консоль, чтобы вам было удобнее отлаживать.
 
+const add = (a, b) => a + b;
+
 function cachingDecoratorNew(func) {
 
   let cache = [];
 
   function wrapper(...args) {
     const hash = args.join(','); // получаем правильный хэш
-    //console.log(hash);
+    console.log(hash);
 
     let idx = cache.findIndex((item) => item.hash == hash); // ищем элемент, хэш которого равен нашему хэшу
+    console.log(idx);
     if (idx !== -1) { // если элемент не найден
       console.log("Из кэша: " + cache[idx].value); // индекс нам известен, по индексу в массиве лежит объект, как получить нужное значение?
       return "Из кэша: " + cache[idx].value;
@@ -26,17 +29,12 @@ function cachingDecoratorNew(func) {
     if (cache.length > 4) {
       cache.shift();
     }
-    if (idx == -1) {
-      let result = function (...args) {
-        const sum = args.reduce(function (accumulator, currentValue) {
-          return accumulator + currentValue;
-        }, 0);
-        console.log(sum);
-        return sum
-      }.call(this, ...args);
+    else {
+      let result = func(...args);
       console.log(result);
+
       //cache[idx] = { hash: hash, value: result }; // добавляем элемент с правильной структурой
-      cache.push({ hash: hash, value: result });
+      cache.push({ hash, value: result });
       console.log(cache);
       console.log("Вычисляем: " + result);
       return "Вычисляем: " + result;
@@ -47,17 +45,10 @@ function cachingDecoratorNew(func) {
 
 //САМОСТЯТЕЛЬНАЯ ПРОВЕРКА ВЫЗОВА
 
-// const upgradedCach = cachingDecoratorNew();
-// upgradedCach(2, 2, 2);
-// upgradedCach(2, 2, 2);
-// console.log(upgradedCach(2, 2, 2));
-// console.log(upgradedCach(3, 2, 2));
-// console.log(upgradedCach(5, 5, 5));
-// console.log(upgradedCach(5, 10, 10));
-// console.log(upgradedCach(6, 6, 6));
-// console.log(upgradedCach(4, 4, 4));
-// console.log(upgradedCach(4, 4, 4));
-// console.log(upgradedCach(4, 4, 4));
+const memoizedAdd = cachingDecoratorNew(add);
+console.log(memoizedAdd(4, 6));
+console.log(memoizedAdd(4, 6));
+
 
 
 
@@ -71,19 +62,36 @@ function cachingDecoratorNew(func) {
 // Они применяется если события, например отправка информации, происходит слишком часто.
 
 
-const showCoords = (x, y) => console.log(`Клик:(${x},${y})`);
 function debounceDecoratorNew(f, ms) {
   let timeout;
+  let flag = 0;
   return function (...args) {
-    if (timeout === undefined) {
-      f(...args);
-    }
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-      timeout = undefined
+      if (flag > 1) {
+        f(...args);
+      }
+      flag = 0;
     }, ms);
+
+    if (!flag) {
+      f(...args);
+    }
+
+    flag++;
+
   };
 }
+
+
+// САМОСТОЯТЕЛЬНАЯ ПРОВЕРКА ВЫЗОВА
+
+// const showCoords = (x, y) => console.log(`Клик:(${x},${y})`);
+// const wrapperShowCoords = debounceDecoratorNew(showCoords, 2000);
+// wrapperShowCoords(3, 3);
+// wrapperShowCoords(3, 3);
+
+
 
 // // ### Задача 3. Усовершенствуйте debounceDecoratorNew
 // // Представьте ситуацию, что пользователь очень часто нажимает отправить,
@@ -93,19 +101,30 @@ function debounceDecoratorNew(f, ms) {
 // // Для решения используйте подход, который был применен в лекции для декоратора-шпиона.
 // // Усовершенствованный декоратор должен называться `debounceDecorator2`.
 
+
 function debounceDecorator2(f, ms) {
   let timeout;
-  function wraper(...args) {
-    if (timeout === undefined) {
+  let flag = 0;
+  function wrapper(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      if (flag > 1) {
+        f(...args);
+      }
+      flag = 0;
+    }, ms);
+
+    if (!flag) {
       f(...args);
-      wraper.count = wraper.count + 1;
-      timeout = setTimeout(()=>{
-        timeout = undefined
-      }, ms);
     }
-  }
-  wraper.count = 0;
-  return wraper;
+
+    flag++;
+    wrapper.count++;
+
+  };
+  wrapper.count = 0;
+  return wrapper;
+
 }
 
 const sendSignal = () => console.log("Сигнал отправлен");
@@ -117,5 +136,5 @@ setTimeout(upgradedSendSignal2, 1200); // проигнорировано так 
 setTimeout(upgradedSendSignal2, 2300); // проигнорировано так как времени от последнего вызова прошло: 2300-1200=1100 (1100 < 2000)
 setTimeout(upgradedSendSignal2, 4400); // Сигнал отправлен так как времени от последнего вызова прошло: 4400-2300=2100 (2100 > 2000)
 setTimeout(upgradedSendSignal2, 4500); // Сигнал будет отправлен, так как последний вызов debounce декоратора (спустя 4500 + 2000 = 6500) 6,5с
-setTimeout(()=>{console.log(upgradedSendSignal2.count);},5000);
+setTimeout(() => { console.log(upgradedSendSignal2.count); }, 5000);
 
